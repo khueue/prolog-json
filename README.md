@@ -1,33 +1,5 @@
 # JSON Parser for Prolog
 
-A JSON (<http://jsonspec.org/>) parser written in Prolog. Used by the
-Prolog MongoDB driver prolongo, <https://github.com/khueue/prolongo>.
-
-## Release History
-
-### Version 1.0.0 (2012-09-10)
-
- * First release as a separate project (previously included in
-<https://github.com/khueue/prolongo>).
- * Exceptions now follow: `json_error(DescriptionAtom, ListOfRelatedVars)`
-
-## Todo
-
- * Nothing for now.
-
-## Usage
-
-Clone the repository, switch to a certain release if you like (`git
-checkout v1.0.0`) and run `make` to compile the necessary C libraries
-and run the test suite. See the tests (*.plt) in the src folder for usage
-examples.
-
-## Dependencies
-
- * SWI-Prolog (tested on Mac OS X using SWI 6.0.2)
- * ANSI C compiler (modify Makefile if not GCC) (tested on Mac OS X
-   using Clang)
-
 ## License
 
 Licensed under the MIT license which can be found in the file
