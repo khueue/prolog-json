@@ -70,18 +70,18 @@ parse_value(Value) -->
     parse_integer(Value).
 
 parse_integer(Integer) -->
-    parse_integer_digits(Digits),
+    parse_digits_for_integer(Digits),
     { chars_number(Digits, Integer) }.
 
-parse_integer_digits([Digit|Digits]) -->
+parse_digits_for_integer([Digit|Digits]) -->
     parse_digit_nonzero(Digit),
     !,
     parse_digits(Digits).
-parse_integer_digits([Digit], []) -->
+parse_digits_for_integer([Digit]) -->
     parse_digit(Digit).
 
 parse_float(Float) -->
-    parse_integer_digits(Integer),
+    parse_digits_for_integer(Integer),
     ['.'],
     parse_digits(Fraction),
     { lists:append(Integer, ['.'|Fraction], Chars) },
