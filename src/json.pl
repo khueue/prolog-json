@@ -64,17 +64,28 @@ parse_value(Value) -->
     parse_chars(Value),
     ['"'].
 parse_value(Value) -->
+    parse_float(Value),
+    !.
+parse_value(Value) -->
     parse_integer(Value).
 
 parse_integer(Integer) -->
-    parse_digit_nonzero(FirstDigit),
+    parse_integer_digits(Digits),
+    { chars_number(Digits, Integer) }.
+
+parse_integer_digits([Digit|Digits]) -->
+    parse_digit_nonzero(Digit),
     !,
-    parse_digits(Digits),
-    { core:atom_chars(Atom, [FirstDigit|Digits]) },
-    { core:atom_number(Atom, Integer) }.
-parse_integer(Integer) -->
-    parse_digit(Digit),
-    { core:atom_number(Digit, Integer) }.
+    parse_digits(Digits).
+parse_integer_digits([Digit], []) -->
+    parse_digit(Digit).
+
+parse_float(Float) -->
+    parse_integer_digits(Integer),
+    ['.'],
+    parse_digits(Fraction),
+    { lists:append(Integer, ['.'|Fraction], Chars) },
+    { chars_number(Chars, Float) }.
 
 parse_digit_nonzero(Digit) -->
     parse_digit(Digit),
@@ -104,9 +115,6 @@ parse_char(Char) -->
     [Char],
     { valid_char(Char) }.
 
-valid_char(Char) :-
-    \+ lists:memberchk(Char, ['"']).
-
 ws -->
     ws_char,
     !,
@@ -116,3 +124,10 @@ ws --> [].
 ws_char -->
     [Char],
     { core:char_type(Char, space) }.
+
+valid_char(Char) :-
+    \+ lists:memberchk(Char, ['"']).
+
+chars_number(Chars, Number) :-
+    core:atom_chars(Atom, Chars),
+    core:atom_number(Atom, Number).
