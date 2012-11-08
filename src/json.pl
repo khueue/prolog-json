@@ -60,14 +60,38 @@ parse_key(Key) -->
 
 parse_value(Value) -->
     ['"'],
-    !,
     parse_chars(Value),
-    ['"'].
+    ['"'],
+    !.
+parse_value(Value) -->
+    parse_float(Float),
+    { chars_number(FloatChars, Float) }, % 5 . 0 5
+    parse_exp(ExpChars),
+    { lists:append(FloatChars, ExpChars, Chars) },
+    { chars_number(Chars, Value) },
+    !.
 parse_value(Value) -->
     parse_float(Value),
     !.
 parse_value(Value) -->
     parse_integer(Value).
+
+parse_exp([E|Chars]) -->
+    parse_e(E),
+    parse_sign(Sign),
+    parse_digits(Digits),
+    { lists:append(Sign, Digits, Chars) },
+    !.
+parse_exp([E|Digits]) -->
+    parse_e(E),
+    parse_digits(Digits).
+
+parse_e('e') --> ['e'], !.
+parse_e('E') --> ['E'], !.
+
+parse_sign(['+']) --> ['+'], !.
+parse_sign(['-']) --> ['-'], !.
+parse_sign([])    --> [], !.
 
 parse_integer(Integer) -->
     parse_digits_for_integer(Digits),
@@ -129,5 +153,11 @@ valid_char(Char) :-
     \+ lists:memberchk(Char, ['"']).
 
 chars_number(Chars, Number) :-
+    nonvar(Chars),
+    !,
     core:atom_chars(Atom, Chars),
     core:atom_number(Atom, Number).
+chars_number(Chars, Number) :-
+    % nonvar(Number),
+    core:atom_number(Atom, Number),
+    core:atom_chars(Atom, Chars).

@@ -89,14 +89,14 @@ test('simple stuff', [true(Got == Expected)]) :-
     {
         "k01" : "åäö_string",
         "k02" : 42,
-        "k03" : 5.05
+        "k03" : 5.05e2
     }
     ',
     Expected =
     [
         k01 - åäö_string,
         k02 - 42,
-        k03 - 5.05
+        k03 - 5.05e2
     ],
     json:doc_json(Expected, Json),
     json:doc_json(Got, Json).
