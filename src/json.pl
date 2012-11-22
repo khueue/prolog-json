@@ -77,6 +77,8 @@ parse_value(Value) -->
     parse_integer(Value).
 parse_value(Value) -->
     parse_symbol(Value).
+parse_value(Value) -->
+    parse_object(Value).
 
 parse_symbol(+true)  --> [t,r,u,e], !.
 parse_symbol(+false) --> [f,a,l,s,e], !.

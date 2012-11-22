@@ -92,7 +92,8 @@ test('simple stuff', [true(Got == Expected)]) :-
         "k03" : 5.05e2,
         "k04" : true,
         "k05" : false,
-        "k06" : null
+        "k06" : null,
+        "k07" : { "k01" : 123, "k02" : null }
     }
     ',
     Expected =
@@ -102,7 +103,8 @@ test('simple stuff', [true(Got == Expected)]) :-
         k03 - 5.05e2,
         k04 - +true,
         k05 - +false,
-        k06 - +null
+        k06 - +null,
+        k07 - [k01 - 123, k02 - +null]
     ],
     json:doc_json(Expected, Json),
     json:doc_json(Got, Json).
