@@ -75,6 +75,12 @@ parse_value(Value) -->
     !.
 parse_value(Value) -->
     parse_integer(Value).
+parse_value(Value) -->
+    parse_symbol(Value).
+
+parse_symbol(+true)  --> [t,r,u,e], !.
+parse_symbol(+false) --> [f,a,l,s,e], !.
+parse_symbol(+null)  --> [n,u,l,l], !.
 
 parse_exp([E|Chars]) -->
     parse_e(E),
