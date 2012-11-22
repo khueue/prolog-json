@@ -87,14 +87,14 @@ test('simple stuff', [true(Got == Expected)]) :-
     Json =
     '
     {
-        "k01" : "åäö_string",
-        "k02" : 42,
-        "k03" : 5.05e2,
-        "k04" : true,
-        "k05" : false,
-        "k06" : null,
-        "k07" : { "k01" : 123, "k02" : null },
-        "k08" : [123, "åäö_string", null]
+        "k01" : "åäö_string" ,
+        "k02" : 42 ,
+        "k03" : 5.05e2 ,
+        "k04" : true ,
+        "k05" : false ,
+        "k06" : null ,
+        "k07" : { "k01" : 123, "k02" : null } ,
+        "k08" : [ 123 , "åäö_string" , null ]
     }
     ',
     Expected =
