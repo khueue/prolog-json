@@ -22,14 +22,14 @@ doc_json(Doc, Json) :-
     core:atom_chars(Json, JsonChars),
     phrase(parse_object(Doc), JsonChars, _JsonCharsRest).
 
-parse_object(Doc) -->
+parse_object(json(Doc)) -->
     ws,
     ['{'],
     parse_members(Doc),
     !,
     ['}'],
     ws.
-parse_object([]) -->
+parse_object(json([])) -->
     ws,
     ['{'],
     ws,
