@@ -93,7 +93,8 @@ test('simple stuff', [true(Got == Expected)]) :-
         "k04" : true,
         "k05" : false,
         "k06" : null,
-        "k07" : { "k01" : 123, "k02" : null }
+        "k07" : { "k01" : 123, "k02" : null },
+        "k08" : [123, "åäö_string", null]
     }
     ',
     Expected =
@@ -104,7 +105,8 @@ test('simple stuff', [true(Got == Expected)]) :-
         k04 - +true,
         k05 - +false,
         k06 - +null,
-        k07 - [k01 - 123, k02 - +null]
+        k07 - [k01 - 123, k02 - +null],
+        k08 - [123, åäö_string, +null]
     ],
     json:doc_json(Expected, Json),
     json:doc_json(Got, Json).

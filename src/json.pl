@@ -74,11 +74,39 @@ parse_value(Value) -->
     parse_float(Value),
     !.
 parse_value(Value) -->
-    parse_integer(Value).
+    parse_integer(Value),
+    !.
 parse_value(Value) -->
-    parse_symbol(Value).
+    parse_symbol(Value),
+    !.
 parse_value(Value) -->
-    parse_object(Value).
+    parse_object(Value),
+    !.
+parse_value(Value) -->
+    parse_array(Value),
+    !.
+
+parse_array(Array) -->
+    ['['],
+    ws,
+    parse_values(Array),
+    !,
+    ws,
+    [']'].
+parse_array([]) -->
+    ['['],
+    ws,
+    [']'].
+
+parse_values([Value|Values]) -->
+    parse_value(Value),
+    ws,
+    [','],
+    !,
+    ws,
+    parse_values(Values).
+parse_values([Value]) -->
+    parse_value(Value).
 
 parse_symbol(+true)  --> [t,r,u,e], !.
 parse_symbol(+false) --> [f,a,l,s,e], !.
