@@ -31,5 +31,5 @@ doc_json(Doc, Json) :-
 doc_json(Doc, Json) :-
     core:nonvar(Doc),
     !,
-    phrase(parse_object(Doc), JsonChars),
+    phrase(term_to_json:parse_object(Doc), JsonChars),
     core:atom_chars(Json, JsonChars).

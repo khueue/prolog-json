@@ -1,6 +1,6 @@
 /** <module> JSON-to-term conversion.
  *
- *  Parses a JSON object and converts it into a Prolog term.
+ *  Parses an atom of a JSON object and converts it into a Prolog term.
  */
 
 :- module(_,
