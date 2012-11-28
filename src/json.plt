@@ -43,7 +43,8 @@ test('term -> json', [true(Got == Expected)]) :-
         k07 - +true,
         k08 - +false,
         k09 - +null,
-        k10 - json([])
+        k10 - json([]),
+        k11 - json([key - val, mysymbol - +null, myarray - [1,2,3,aoeu]])
     ]),
     json:doc_json(Expected, MinifiedJson),
     json:doc_json(Got, MinifiedJson).

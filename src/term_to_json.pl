@@ -36,6 +36,16 @@ parse_key(Key) -->
     parse_atom(Key).
 
 parse_value(Value) -->
+    { looks_like_list(Value) }, % Must precede atom() check!
+    !,
+    parse_array(Value).
+parse_value(json(Value)) -->
+    !,
+    parse_object(json(Value)).
+parse_value(+Value) -->
+    !,
+    parse_symbol(Value).
+parse_value(Value) -->
     { core:atom(Value) },
     !,
     parse_atom(Value).
@@ -47,16 +57,6 @@ parse_value(Value) -->
     { core:integer(Value) },
     !,
     parse_integer(Value).
-parse_value(+Value) -->
-    !,
-    parse_symbol(Value).
-parse_value(Value) -->
-    { looks_like_list(Value) }, % XXXX check some precedence?
-    !,
-    parse_array(Value).
-parse_value(json(Value)) -->
-    !,
-    parse_object(json(Value)).
 
 looks_like_list([]).
 looks_like_list([_|_]).
