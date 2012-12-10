@@ -21,7 +21,6 @@ json_configure_globals :-
 
 json_configure_load_paths :-
     prolog_load_context(directory, Root), % Available only during compilation.
-    json_configure_path(Root, 'lib', foreign),
     json_configure_path(Root, 'src', json).
 
 json_configure_path(PathPrefix, PathSuffix, Name) :-
