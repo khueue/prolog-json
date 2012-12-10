@@ -154,10 +154,19 @@ parse_chars(Atom) -->
     { core:atom_chars(Atom, Chars) }.
 
 parse_chars_aux([Char|Chars]) -->
+    ['\\'],
+    !,
+    parse_escape_char(Char),
+    parse_chars_aux(Chars).
+parse_chars_aux([Char|Chars]) -->
     parse_char(Char),
     !,
     parse_chars_aux(Chars).
 parse_chars_aux([]) --> [].
+
+parse_escape_char(RealChar) -->
+    [Char],
+    { valid_escape_char(Char, RealChar) }.
 
 parse_char(Char) -->
     [Char],
@@ -172,6 +181,15 @@ ws --> [].
 ws_char -->
     [Char],
     { core:char_type(Char, space) }.
+
+valid_escape_char('"',  '"').
+valid_escape_char('\\', '\\').
+valid_escape_char('/',  '/').
+valid_escape_char('b',  '\b').
+valid_escape_char('f',  '\f').
+valid_escape_char('n',  '\n').
+valid_escape_char('r',  '\r').
+valid_escape_char('t',  '\t').
 
 valid_char(Char) :-
     \+ lists:memberchk(Char, ['"']).
