@@ -156,7 +156,7 @@ parse_chars(Atom) -->
 parse_chars_aux([Char|Chars]) -->
     ['\\'],
     !,
-    parse_escape_char(Char),
+    parse_escape_sequence(Char),
     parse_chars_aux(Chars).
 parse_chars_aux([Char|Chars]) -->
     parse_char(Char),
@@ -164,9 +164,18 @@ parse_chars_aux([Char|Chars]) -->
     parse_chars_aux(Chars).
 parse_chars_aux([]) --> [].
 
-parse_escape_char(RealChar) -->
+parse_escape_sequence(RealChar) -->
     [Char],
-    { valid_escape_char(Char, RealChar) }.
+    { valid_escape_char(Char, RealChar) },
+    !.
+parse_escape_sequence(Char) -->
+    parse_hex_sequence(Char).
+
+parse_hex_sequence(Char) -->
+    ['u',Hex1,Hex2,Hex3,Hex4],
+    { core:atomic_list_concat(['0x',Hex1,Hex2,Hex3,Hex4], HexAtom) },
+    { core:atom_number(HexAtom, Code) },
+    { core:atom_codes(Char, [Code]) }.
 
 parse_char(Char) -->
     [Char],
