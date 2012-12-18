@@ -26,10 +26,8 @@ version([1,0,0]).
 doc_json(Doc, Json) :-
     core:nonvar(Json),
     !,
-    core:atom_chars(Json, JsonChars),
-    phrase(json_to_term:parse_object(Doc), JsonChars).
+    json_to_term:json_to_term(Json, Doc).
 doc_json(Doc, Json) :-
     core:nonvar(Doc),
     !,
-    phrase(term_to_json:parse_object(Doc), JsonChars),
-    core:atom_chars(Json, JsonChars).
+    term_to_json:term_to_json(Doc, Json).

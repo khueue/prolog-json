@@ -5,10 +5,14 @@
 
 :- module(_,
     [
-        parse_object//1
+        json_to_term/2
     ]).
 
 :- include(json(include/common)).
+
+json_to_term(Json, Term) :-
+    core:atom_chars(Json, JsonChars),
+    phrase(parse_object(Term), JsonChars).
 
 parse_object(json(Doc)) -->
     ws,
@@ -100,26 +104,27 @@ parse_symbol(+true)  --> [t,r,u,e], !.
 parse_symbol(+false) --> [f,a,l,s,e], !.
 parse_symbol(+null)  --> [n,u,l,l], !.
 
-parse_exp([E|Chars]) -->
+parse_exp(Chars) -->
     parse_e(E),
-    parse_sign(Sign),
+    parse_optional_sign(Sign),
     parse_digits(Digits),
-    { lists:append(Sign, Digits, Chars) },
-    !.
-parse_exp([E|Digits]) -->
-    parse_e(E),
-    parse_digits(Digits).
+    { lists:append([E,Sign,Digits], Chars) }.
 
-parse_e('e') --> ['e'], !.
-parse_e('E') --> ['E'], !.
+parse_e(['e']) --> ['e'], !.
+parse_e(['E']) --> ['E'], !.
 
-parse_sign(['+']) --> ['+'], !.
-parse_sign(['-']) --> ['-'], !.
-parse_sign([])    --> [], !.
+parse_optional_sign(['+']) --> ['+'], !.
+parse_optional_sign(['-']) --> ['-'], !.
+parse_optional_sign([])    --> [], !.
 
 parse_integer(Integer) -->
+    parse_optional_minus(Minus),
     parse_digits_for_integer(Digits),
-    { chars_number(Digits, Integer) }.
+    { lists:append([Minus,Digits], Chars) },
+    { chars_number(Chars, Integer) }.
+
+parse_optional_minus(['-']) --> ['-'], !.
+parse_optional_minus([])    --> [], !.
 
 parse_digits_for_integer([Digit|Digits]) -->
     parse_digit_nonzero(Digit),
@@ -129,10 +134,11 @@ parse_digits_for_integer([Digit]) -->
     parse_digit(Digit).
 
 parse_float(Float) -->
+    parse_optional_minus(Minus),
     parse_digits_for_integer(Integer),
     ['.'],
     parse_digits(Fraction),
-    { lists:append(Integer, ['.'|Fraction], Chars) },
+    { lists:append([Minus,Integer,['.'],Fraction], Chars) },
     { chars_number(Chars, Float) }.
 
 parse_digit_nonzero(Digit) -->

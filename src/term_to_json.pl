@@ -1,14 +1,18 @@
 /** <module> Term-to-JSON conversion.
  *
- *  Converts a Prolog term into a JSON object atom.
+ *  Converts a Prolog term into a JSON atom.
  */
 
 :- module(_,
     [
-        parse_object//1
+        term_to_json/2
     ]).
 
 :- include(json(include/common)).
+
+term_to_json(Term, Json) :-
+    phrase(parse_object(Term), JsonChars),
+    core:atom_chars(Json, JsonChars).
 
 parse_object(json([])) -->
     !,
@@ -83,7 +87,6 @@ parse_special_chars(['\\'|Chars], RestChars) -->
 parse_special_chars([Char|Chars], Chars) -->
     { single_special_char(Char, EscapedChar) },
     ['\\',EscapedChar].
-% Throw here.
 
 single_special_char('"',  '"').
 single_special_char('/',  '/').

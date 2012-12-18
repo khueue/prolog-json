@@ -1,5 +1,12 @@
 # JSON Parser for Prolog
 
+## Todo
+
+ * Move stuff to util.pl
+ * Go through escaping once more
+ * Try to get rid of appends
+ * Expand and complete test suite
+
 ## License
 
 Licensed under the MIT license which can be found in the file
