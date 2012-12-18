@@ -201,7 +201,7 @@ valid_escape_char('r',  '\r').
 valid_escape_char('t',  '\t').
 
 valid_char(Char) :-
-    \+ lists:memberchk(Char, ['"']).
+    Char \== '"'.
 
 chars_number(Chars, Number) :-
     nonvar(Chars),
@@ -209,6 +209,6 @@ chars_number(Chars, Number) :-
     core:atom_chars(Atom, Chars),
     core:atom_number(Atom, Number).
 chars_number(Chars, Number) :-
-    % nonvar(Number),
+    % Assume nonvar(Number).
     core:atom_number(Atom, Number),
     core:atom_chars(Atom, Chars).

@@ -64,8 +64,39 @@ looks_like_list([_|_]).
 parse_atom(Value) -->
     ['"'],
     { core:atom_chars(Value, Chars) },
-    Chars,
+    parse_string_chars(Chars),
     ['"'].
+
+parse_string_chars([]) --> !, [].
+parse_string_chars(Chars) -->
+    parse_special_chars(Chars, RestChars),
+    !,
+    parse_string_chars(RestChars).
+parse_string_chars([Char|Chars]) -->
+    [Char],
+    parse_string_chars(Chars).
+
+parse_special_chars(['\\'|Chars], RestChars) -->
+    ['\\'],
+    !,
+    parse_escape_sequence(Chars, RestChars).
+parse_special_chars([Char|Chars], Chars) -->
+    { single_special_char(Char, EscapedChar) },
+    ['\\',EscapedChar].
+% Throw here.
+
+single_special_char('"',  '"').
+single_special_char('/',  '/').
+single_special_char('\b', 'b').
+single_special_char('\f', 'f').
+single_special_char('\n', 'n').
+single_special_char('\r', 'r').
+
+parse_escape_sequence(['u',Hex1,Hex2,Hex3,Hex4|Chars], Chars) -->
+    ['u',Hex1,Hex2,Hex3,Hex4],
+    !.
+parse_escape_sequence(Chars, Chars) -->
+    ['\\'].
 
 parse_float(Value) -->
     { json_to_term:chars_number(Chars, Value) },
