@@ -10,6 +10,8 @@
 
 :- include(json(include/common)).
 
+:- use_module(json(util), []).
+
 term_to_json(Term, Json) :-
     phrase(parse_object(Term), JsonChars),
     core:atom_chars(Json, JsonChars).
@@ -40,7 +42,7 @@ parse_key(Key) -->
     parse_atom(Key).
 
 parse_value(Value) -->
-    { looks_like_list(Value) }, % Must precede atom() check!
+    { util:looks_like_list(Value) }, % Must precede atom() check!
     !,
     parse_array(Value).
 parse_value(json(Value)) -->
@@ -61,9 +63,6 @@ parse_value(Value) -->
     { core:integer(Value) },
     !,
     parse_integer(Value).
-
-looks_like_list([]).
-looks_like_list([_|_]).
 
 parse_atom(Value) -->
     ['"'],
@@ -102,11 +101,11 @@ parse_escape_sequence(Chars, Chars) -->
     ['\\'].
 
 parse_float(Value) -->
-    { json_to_term:chars_number(Chars, Value) },
+    { util:chars_number(Chars, Value) },
     Chars.
 
 parse_integer(Value) -->
-    { json_to_term:chars_number(Chars, Value) },
+    { util:chars_number(Chars, Value) },
     Chars.
 
 parse_array([]) -->

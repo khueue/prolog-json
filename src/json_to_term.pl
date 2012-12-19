@@ -10,6 +10,8 @@
 
 :- include(json(include/common)).
 
+:- use_module(json(util), []).
+
 json_to_term(Json, Term) :-
     core:atom_chars(Json, JsonChars),
     phrase(parse_object(Term), JsonChars).
@@ -57,10 +59,10 @@ parse_value(Value) -->
     !.
 parse_value(Value) -->
     parse_float(Float),
-    { chars_number(FloatChars, Float) }, % 5 . 0 5
+    { util:chars_number(FloatChars, Float) },
     parse_exp(ExpChars),
     { lists:append(FloatChars, ExpChars, Chars) },
-    { chars_number(Chars, Value) },
+    { util:chars_number(Chars, Value) },
     !.
 parse_value(Value) -->
     parse_float(Value),
@@ -121,7 +123,7 @@ parse_integer(Integer) -->
     parse_optional_minus(Minus),
     parse_digits_for_integer(Digits),
     { lists:append([Minus,Digits], Chars) },
-    { chars_number(Chars, Integer) }.
+    { util:chars_number(Chars, Integer) }.
 
 parse_optional_minus(['-']) --> ['-'], !.
 parse_optional_minus([])    --> [], !.
@@ -139,7 +141,7 @@ parse_float(Float) -->
     ['.'],
     parse_digits(Fraction),
     { lists:append([Minus,Integer,['.'],Fraction], Chars) },
-    { chars_number(Chars, Float) }.
+    { util:chars_number(Chars, Float) }.
 
 parse_digit_nonzero(Digit) -->
     parse_digit(Digit),
@@ -208,13 +210,3 @@ valid_escape_char('t',  '\t').
 
 valid_char(Char) :-
     Char \== '"'.
-
-chars_number(Chars, Number) :-
-    nonvar(Chars),
-    !,
-    core:atom_chars(Atom, Chars),
-    core:atom_number(Atom, Number).
-chars_number(Chars, Number) :-
-    % Assume nonvar(Number).
-    core:atom_number(Atom, Number),
-    core:atom_chars(Atom, Chars).
