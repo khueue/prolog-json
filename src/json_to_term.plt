@@ -55,34 +55,104 @@ test('json->term, float exp', [true(Got == Expected)]) :-
         ]),
     json_to_term:json_to_term(Json, Got).
 
-test('json->term, complex object', [true(Got == Expected)]) :-
+test('json->term, string simple', [true(Got == Expected)]) :-
     Json =
         '
         {
             "k01" : "",
-            "k02" : " \\" \\\\ \\/ \\b \\f \\n \\r \\u00a3 ",
-            "k03" : "åäö_string",
-            "k04" : 42,
-            "k05" : 5.05,
-            "k06" : [],
-            "k07" : ["åäö_string", 42, 5.05, {}, {"key":"val"}, [42, 5.05, true]],
-            "k08" : true,
-            "k09" : false,
-            "k10" : null
+            "k02" : "åäö_string"
         }
         ',
     Expected =
         json([
             k01 - '',
-            k02 - ' " \\ / \b \f \n \r £ ',
-            k03 - 'åäö_string',
-            k04 - 42,
-            k05 - 5.05,
-            k06 - [],
-            k07 - [åäö_string, 42, 5.05, json([]), json([key-val]), [42,5.05,+true]],
-            k08 - +true,
-            k09 - +false,
-            k10 - +null
+            k02 - åäö_string
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, string escapes, special', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : " \\" \\\\ \\/ "
+        }
+        ',
+    Expected =
+        json([
+            k01 - ' " \\ / '
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, string escapes, control', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : " \\b \\f \\n \\r "
+        }
+        ',
+    Expected =
+        json([
+            k01 - ' \b \f \n \r '
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, string escapes, hex', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : " \\u00a3 "
+        }
+        ',
+    Expected =
+        json([
+            k01 - ' £ '
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, symbol', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : true,
+            "k02" : false,
+            "k03" : null
+        }
+        ',
+    Expected =
+        json([
+            k01 - +true,
+            k02 - +false,
+            k03 - +null
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, array', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : [],
+            "k02" : ["åäö_string", 42, 5.05, {}, {"key":"val"}, [42, 5.05, true]]
+        }
+        ',
+    Expected =
+        json([
+            k01 - [],
+            k02 - [åäö_string, 42, 5.05, json([]), json([key-val]), [42,5.05,+true]]
+        ]),
+    json_to_term:json_to_term(Json, Got).
+
+test('json->term, object', [true(Got == Expected)]) :-
+    Json =
+        '
+        {
+            "k01" : {},
+            "k02" : { "k01":123, "k02":5.05, "k03":{"key":"val"}, "k04":[42,true] }
+        }
+        ',
+    Expected =
+        json([
+            k01 - json([]),
+            k02 - json([k01-123, k02-5.05, k03-json([key-val]), k04-[42,+true]])
         ]),
     json_to_term:json_to_term(Json, Got).
 
