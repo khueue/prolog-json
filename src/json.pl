@@ -1,13 +1,11 @@
-/** <module> JSON manipulation.
- *
- *  JSON document manipulation and conversion to-and-from bytes.
+/** <module> JSON parser.
  *
  *  @see <http://jsonspec.org/>
  */
 
 :- module(_,
     [
-        doc_json/2,
+        term_json/2,
         version/1
     ]).
 
@@ -23,11 +21,17 @@
 
 version([1,0,0]).
 
-doc_json(Doc, Json) :-
+%%  term_json(+Term, -Json) is semidet.
+%%  term_json(-Term, +Json) is semidet.
+%
+%   True if Term is the Prolog representation of the JSON-encoded object
+%   atom in Json.
+
+term_json(Term, Json) :-
     core:nonvar(Json),
     !,
-    json_to_term:json_to_term(Json, Doc).
-doc_json(Doc, Json) :-
-    core:nonvar(Doc),
+    json_to_term:json_to_term(Json, Term).
+term_json(Term, Json) :-
+    core:nonvar(Term),
     !,
-    term_to_json:term_to_json(Doc, Json).
+    term_to_json:term_to_json(Term, Json).

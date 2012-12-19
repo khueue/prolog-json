@@ -1,3 +1,6 @@
+/** <module> Common utility predicates.
+ */
+
 :- module(_,
     [
         chars_number/2,

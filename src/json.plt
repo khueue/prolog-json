@@ -2,7 +2,7 @@
 
 :- use_module(json(json), []).
 
-:- begin_tests('json:doc_bytes/2').
+:- begin_tests('json:term_json/2').
 
 test('complex object, back and forth', [true(Got == Expected)]) :-
     Expected =
@@ -20,7 +20,7 @@ test('complex object, back and forth', [true(Got == Expected)]) :-
             k11 - json([]),
             k12 - json([key - val, mysymbol - +null, myarray - [1,2,3,aoeu]])
         ]),
-    json:doc_json(Expected, MinifiedJson),
-    json:doc_json(Got, MinifiedJson).
+    json:term_json(Expected, MinifiedJson),
+    json:term_json(Got, MinifiedJson).
 
-:- end_tests('json:doc_bytes/2').
+:- end_tests('json:term_json/2').
