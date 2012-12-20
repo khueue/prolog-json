@@ -48,27 +48,13 @@ parse_pair(Key-Value) -->
     ws.
 
 parse_key(Key) -->
-    ['"'],
-    parse_chars(Key),
-    ['"'].
+    parse_string(Key).
 
 parse_value(Value) -->
-    ['"'],
-    parse_chars(Value),
-    ['"'],
+    parse_string(Value),
     !.
 parse_value(Value) -->
-    parse_float(Float),
-    { util:chars_number(FloatChars, Float) },
-    parse_exp(ExpChars),
-    { lists:append(FloatChars, ExpChars, Chars) },
-    { util:chars_number(Chars, Value) },
-    !.
-parse_value(Value) -->
-    parse_float(Value),
-    !.
-parse_value(Value) -->
-    parse_integer(Value),
+    parse_number(Value),
     !.
 parse_value(Value) -->
     parse_symbol(Value),
@@ -79,6 +65,11 @@ parse_value(Value) -->
 parse_value(Value) -->
     parse_array(Value),
     !.
+
+parse_string(Value) -->
+    ['"'],
+    parse_chars(Value),
+    ['"'].
 
 parse_array(Array) -->
     ['['],
@@ -106,18 +97,11 @@ parse_symbol(+true)  --> [t,r,u,e], !.
 parse_symbol(+false) --> [f,a,l,s,e], !.
 parse_symbol(+null)  --> [n,u,l,l], !.
 
-parse_exp(Chars) -->
-    parse_e(E),
-    parse_optional_sign(Sign),
-    parse_digits(Digits),
-    { lists:append([E,Sign,Digits], Chars) }.
-
-parse_e(['e']) --> ['e'], !.
-parse_e(['E']) --> ['E'], !.
-
-parse_optional_sign(['+']) --> ['+'], !.
-parse_optional_sign(['-']) --> ['-'], !.
-parse_optional_sign([])    --> [], !.
+parse_number(Number) -->
+    parse_float(Number),
+    !.
+parse_number(Number) -->
+    parse_integer(Number).
 
 parse_integer(Integer) -->
     parse_optional_minus(Minus),
@@ -140,8 +124,30 @@ parse_float(Float) -->
     parse_digits_for_integer(Integer),
     ['.'],
     parse_digits(Fraction),
+    parse_exp(ExpChars),
+    { lists:append([Minus,Integer,['.'],Fraction,ExpChars], Chars) },
+    { util:chars_number(Chars, Float) },
+    !.
+parse_float(Float) -->
+    parse_optional_minus(Minus),
+    parse_digits_for_integer(Integer),
+    ['.'],
+    parse_digits(Fraction),
     { lists:append([Minus,Integer,['.'],Fraction], Chars) },
     { util:chars_number(Chars, Float) }.
+
+parse_exp(Chars) -->
+    parse_e(E),
+    parse_optional_sign(Sign),
+    parse_digits(Digits),
+    { lists:append([E,Sign,Digits], Chars) }.
+
+parse_e(['e']) --> ['e'], !.
+parse_e(['E']) --> ['E'], !.
+
+parse_optional_sign(['+']) --> ['+'], !.
+parse_optional_sign(['-']) --> ['-'], !.
+parse_optional_sign([])    --> [], !.
 
 parse_digit_nonzero(Digit) -->
     parse_digit(Digit),

@@ -25,7 +25,7 @@ version([1,0,0]).
 %%  term_json(-Term, +Json) is semidet.
 %
 %   True if Term is the Prolog representation of the JSON-encoded object
-%   atom in Json.
+%   atom Json.
 
 term_json(Term, Json) :-
     core:nonvar(Json),

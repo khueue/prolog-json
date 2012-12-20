@@ -9,6 +9,13 @@
 
 :- include(json(include/common)).
 
+%%  chars_number(+Chars, -Number) is semidet.
+%%  chars_number(-Chars, +Number) is semidet.
+%
+%   True if Number is the numerical representation of Chars, where Chars
+%   is any valid sequence of characters for a number (integer, float,
+%   hex, etc.).
+
 chars_number(Chars, Number) :-
     nonvar(Chars),
     !,
@@ -18,6 +25,12 @@ chars_number(Chars, Number) :-
     % Assume nonvar(Number).
     core:atom_number(Atom, Number),
     core:atom_chars(Atom, Chars).
+
+%%  looks_like_list(+List) is semidet.
+%
+%   True if List looks like a list, meaning that only the outermost structure
+%   is investigated, in constant time (no recursion to see if the list is
+%   proper).
 
 looks_like_list([]).
 looks_like_list([_|_]).
