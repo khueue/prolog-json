@@ -56,13 +56,9 @@ parse_value(Value) -->
     !,
     parse_atom(Value).
 parse_value(Value) -->
-    { core:float(Value) },
+    { core:number(Value) },
     !,
-    parse_float(Value).
-parse_value(Value) -->
-    { core:integer(Value) },
-    !,
-    parse_integer(Value).
+    parse_number(Value).
 
 parse_atom(Value) -->
     ['"'],
@@ -100,11 +96,7 @@ parse_escape_sequence(['u',Hex1,Hex2,Hex3,Hex4|Chars], Chars) -->
 parse_escape_sequence(Chars, Chars) -->
     ['\\'].
 
-parse_float(Value) -->
-    { util:chars_number(Chars, Value) },
-    Chars.
-
-parse_integer(Value) -->
+parse_number(Value) -->
     { util:chars_number(Chars, Value) },
     Chars.
 
