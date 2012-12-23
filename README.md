@@ -5,6 +5,7 @@
  * Go through escaping once more
  * Refactor parse_float
  * Try to get rid of appends
+ * Add proper error handling
 
 ## License
 
