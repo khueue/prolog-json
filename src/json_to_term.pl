@@ -128,12 +128,12 @@ parse_float(Float) -->
     { lists:append([Minus,Integer,['.'],Fraction,Exponent], Chars) },
     { util:chars_number(Chars, Float) }.
 
-parse_optional_exponent(Exponent) -->
+parse_optional_exponent(Chars) -->
     parse_e(E),
     parse_optional_sign(Sign),
     parse_digits(Digits),
     !,
-    { lists:append([E,Sign,Digits], Exponent) }.
+    { lists:append([E,Sign,Digits], Chars) }.
 parse_optional_exponent([]) --> [].
 
 parse_e(['e']) --> ['e'], !.
