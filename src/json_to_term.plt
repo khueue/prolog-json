@@ -53,6 +53,17 @@ test('json->term, float exp', [true(Got == Expected)]) :-
         ]),
     json_to_term:json_to_term(Json, Got).
 
+test('json->term, invalid float', [
+        throws(json_error(parse,context(parse_float//3,_Message)))
+    ]) :-
+    Json =
+        '
+        {
+            "k01" : 0.e0
+        }
+        ',
+    json_to_term:json_to_term(Json, _Got).
+
 test('json->term, string simple', [true(Got == Expected)]) :-
     Json =
         '

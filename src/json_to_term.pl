@@ -147,30 +147,23 @@ parse_number(Number) -->
 parse_number(Number) -->
     parse_integer(Number).
 
-parse_integer(Integer) -->
-    parse_optional_minus(Minus),
-    parse_digits_for_integer(Digits),
-    { lists:append([Minus,Digits], Chars) },
-    { util:chars_number(Chars, Integer) }.
-
-parse_optional_minus(['-']) --> ['-'], !.
-parse_optional_minus([])    --> [], !.
-
-parse_digits_for_integer([Digit|Digits]) -->
-    parse_digit_nonzero(Digit),
-    !,
-    parse_digits(Digits).
-parse_digits_for_integer([Digit]) -->
-    parse_digit(Digit).
-
 parse_float(Float) -->
     parse_optional_minus(Minus),
     parse_digits_for_integer(Integer),
     ['.'],
-    parse_digits(Fraction),
-    parse_optional_exponent(Exponent),
+    parse_float_or_throw(Fraction, Exponent),
     { lists:append([Minus,Integer,['.'],Fraction,Exponent], Chars) },
     { util:chars_number(Chars, Float) }.
+
+parse_float_or_throw(Fraction, Exponent) -->
+    parse_digits(Fraction),
+    parse_optional_exponent(Exponent),
+    !.
+parse_float_or_throw(_, _) -->
+    { throw(
+        json_error(
+            parse,
+            context(parse_float//3, _Message))) }.
 
 parse_optional_exponent(Chars) -->
     parse_e(E),
@@ -187,15 +180,35 @@ parse_optional_sign(['+']) --> ['+'], !.
 parse_optional_sign(['-']) --> ['-'], !.
 parse_optional_sign([])    --> [], !.
 
+parse_integer(Integer) -->
+    parse_optional_minus(Minus),
+    parse_digits_for_integer(Digits),
+    { lists:append([Minus,Digits], Chars) },
+    { util:chars_number(Chars, Integer) }.
+
+parse_optional_minus(['-']) --> ['-'], !.
+parse_optional_minus([])    --> [], !.
+
+parse_digits_for_integer([Digit|Digits]) -->
+    parse_digit_nonzero(Digit),
+    !,
+    parse_optional_digits(Digits).
+parse_digits_for_integer([Digit]) -->
+    parse_digit(Digit).
+
 parse_digit_nonzero(Digit) -->
     parse_digit(Digit),
     { Digit \== '0' }.
 
-parse_digits([Digit|Digits]) -->
+parse_optional_digits([Digit|Digits]) -->
     parse_digit(Digit),
     !,
-    parse_digits(Digits).
-parse_digits([]) --> [].
+    parse_optional_digits(Digits).
+parse_optional_digits([]) --> [].
+
+parse_digits([Digit|Digits]) -->
+    parse_digit(Digit),
+    parse_optional_digits(Digits).
 
 parse_digit(Digit) -->
     [Digit],
