@@ -17,14 +17,20 @@
 %   hex, etc.).
 
 chars_number(Chars, Number) :-
-    nonvar(Chars),
+    core:nonvar(Chars),
     !,
     core:atom_chars(Atom, Chars),
     core:atom_number(Atom, Number).
 chars_number(Chars, Number) :-
-    % Assume nonvar(Number).
+    core:nonvar(Number),
+    !,
     core:atom_number(Atom, Number),
     core:atom_chars(Atom, Chars).
+chars_number(_Chars, _Number) :-
+    throw(
+        json_error(
+            instantiation,
+            context(chars_number/2, _Message))).
 
 %%  looks_like_list(+List) is semidet.
 %

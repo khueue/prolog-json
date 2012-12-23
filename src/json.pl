@@ -35,3 +35,8 @@ term_json(Term, Json) :-
     core:nonvar(Term),
     !,
     term_to_json:term_to_json(Term, Json).
+term_json(_Term, _Json) :-
+    throw(
+        json_error(
+            instantiation,
+            context(term_json/2, _Message))).
