@@ -16,27 +16,31 @@ json_to_term(Json, Term) :-
     core:atom_chars(Json, JsonChars),
     phrase(parse_object(Term), JsonChars).
 
-parse_object(json(Doc)) -->
+parse_object(Term) -->
     ws,
     ['{'],
-    parse_members(Doc),
-    !,
-    ['}'],
-    ws.
-parse_object(json([])) -->
-    ws,
-    ['{'],
-    ws,
-    ['}'],
-    ws.
+    parse_object_or_throw(Term).
 
-parse_members([Key-Value|Pairs]) -->
-    parse_pair(Key-Value),
+parse_object_or_throw(json(Members)) -->
+    parse_members(Members),
+    ['}'],
+    ws,
+    !.
+parse_object_or_throw(json([])) -->
+    ws,
+    ['}'],
+    ws,
+    !.
+parse_object_or_throw(_Term) -->
+    { throw(json_error(parse, context(parse_object//3, _Message))) }.
+
+parse_members([Pair|Members]) -->
+    parse_pair(Pair),
     [','],
     !,
-    parse_members(Pairs).
-parse_members([Key-Value]) -->
-    parse_pair(Key-Value).
+    parse_members(Members).
+parse_members([Pair]) -->
+    parse_pair(Pair).
 
 parse_pair(Key-Value) -->
     ws,

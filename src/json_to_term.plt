@@ -154,4 +154,15 @@ test('json->term, object', [true(Got == Expected)]) :-
         ]),
     json_to_term:json_to_term(Json, Got).
 
+test('json->term, invalid object', [
+        throws(json_error(parse,context(parse_object//3,_Message)))
+    ]) :-
+    Json =
+        '
+        {
+            "k01" : {e}
+        }
+        ',
+    json_to_term:json_to_term(Json, _Got).
+
 :- end_tests('json_to_term:json_to_term/2').
