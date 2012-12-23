@@ -1,7 +1,5 @@
 :- include(json(include/common)).
 
-:- use_module(json(term_to_json), []).
-
 :- begin_tests('term_to_json:term_to_json/2').
 
 test('term->json, integer', [true(Got == Expected)]) :-

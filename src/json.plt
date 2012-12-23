@@ -1,7 +1,5 @@
 :- include(json(include/common)).
 
-:- use_module(json(json), []).
-
 :- begin_tests('json:term_json/2').
 
 test('complex object, back and forth', [true(Got == Expected)]) :-
