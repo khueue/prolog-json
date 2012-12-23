@@ -124,23 +124,17 @@ parse_float(Float) -->
     parse_digits_for_integer(Integer),
     ['.'],
     parse_digits(Fraction),
-    parse_exp(ExpChars),
-    { lists:append([Minus,Integer,['.'],Fraction,ExpChars], Chars) },
-    { util:chars_number(Chars, Float) },
-    !.
-parse_float(Float) -->
-    parse_optional_minus(Minus),
-    parse_digits_for_integer(Integer),
-    ['.'],
-    parse_digits(Fraction),
-    { lists:append([Minus,Integer,['.'],Fraction], Chars) },
+    parse_exp(Exponent),
+    { lists:append([Minus,Integer,['.'],Fraction,Exponent], Chars) },
     { util:chars_number(Chars, Float) }.
 
 parse_exp(Chars) -->
     parse_e(E),
     parse_optional_sign(Sign),
     parse_digits(Digits),
+    !,
     { lists:append([E,Sign,Digits], Chars) }.
+parse_exp([]) --> [].
 
 parse_e(['e']) --> ['e'], !.
 parse_e(['E']) --> ['E'], !.
