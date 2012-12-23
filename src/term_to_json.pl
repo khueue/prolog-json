@@ -42,7 +42,7 @@ parse_key(Key) -->
     parse_atom(Key).
 
 parse_value(Value) -->
-    { util:looks_like_list(Value) }, % Must precede atom() check!
+    { util:looks_like_list(Value) }, % Must precede atom/1 check!
     !,
     parse_array(Value).
 parse_value(json(Value)) -->
