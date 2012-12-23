@@ -16,6 +16,10 @@ json_to_term(Json, Term) :-
     core:atom_chars(Json, JsonChars),
     phrase(parse_object(Term), JsonChars).
 
+%   parse_object(Term)
+%
+%   XXX
+
 parse_object(Term) -->
     ws,
     ['{'],
@@ -31,8 +35,11 @@ parse_object_or_throw(json([])) -->
     ['}'],
     ws,
     !.
-parse_object_or_throw(_Term) -->
-    { throw(json_error(parse, context(parse_object//3, _Message))) }.
+parse_object_or_throw(_) -->
+    { throw(
+        json_error(
+            parse,
+            context(parse_object//3, _Message))) }.
 
 parse_members([Pair|Members]) -->
     parse_pair(Pair),
@@ -70,22 +77,47 @@ parse_value(Value) -->
     parse_array(Value),
     !.
 
+%   parse_string(Term)
+%
+%   XXX
+
 parse_string(Value) -->
     ['"'],
+    parse_string_or_throw(Value).
+
+parse_string_or_throw(Value) -->
     parse_chars(Value),
-    ['"'].
+    ['"'],
+    !.
+parse_string_or_throw(_) -->
+    { throw(
+        json_error(
+            parse,
+            context(parse_string//3, _Message))) }.
+
+%   parse_array(Term)
+%
+%   XXX
 
 parse_array(Array) -->
     ['['],
     ws,
+    parse_array_or_throw(Array).
+
+parse_array_or_throw(Array) -->
     parse_values(Array),
-    !,
     ws,
-    [']'].
-parse_array([]) -->
-    ['['],
+    [']'],
+    !.
+parse_array_or_throw([]) -->
     ws,
-    [']'].
+    [']'],
+    !.
+parse_array_or_throw(_) -->
+    { throw(
+        json_error(
+            parse,
+            context(parse_array//3, _Message))) }.
 
 parse_values([Value|Values]) -->
     parse_value(Value),
@@ -97,9 +129,17 @@ parse_values([Value|Values]) -->
 parse_values([Value]) -->
     parse_value(Value).
 
+%   parse_symbol(Term)
+%
+%   XXX
+
 parse_symbol(+true)  --> [t,r,u,e], !.
 parse_symbol(+false) --> [f,a,l,s,e], !.
 parse_symbol(+null)  --> [n,u,l,l], !.
+
+%   parse_number(Term)
+%
+%   XXX
 
 parse_number(Number) -->
     parse_float(Number),

@@ -139,6 +139,17 @@ test('json->term, array', [true(Got == Expected)]) :-
         ]),
     json_to_term:json_to_term(Json, Got).
 
+test('json->term, invalid array', [
+        throws(json_error(parse,context(parse_array//3,_Message)))
+    ]) :-
+    Json =
+        '
+        {
+            "k01" : [invalid_value],
+        }
+        ',
+    json_to_term:json_to_term(Json, _Got).
+
 test('json->term, object', [true(Got == Expected)]) :-
     Json =
         '
@@ -160,7 +171,7 @@ test('json->term, invalid object', [
     Json =
         '
         {
-            "k01" : {e}
+            "k01" : {invalid_value}
         }
         ',
     json_to_term:json_to_term(Json, _Got).
