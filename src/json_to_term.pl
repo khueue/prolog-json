@@ -36,10 +36,7 @@ parse_object_or_throw(json([])) -->
     ws,
     !.
 parse_object_or_throw(_) -->
-    { throw(
-        json_error(
-            parse,
-            context(parse_object//3, _Message))) }.
+    get_context_and_throw(parse_object//1).
 
 parse_members([Pair|Members]) -->
     parse_pair(Pair),
@@ -90,10 +87,25 @@ parse_string_or_throw(Value) -->
     ['"'],
     !.
 parse_string_or_throw(_) -->
-    { throw(
-        json_error(
-            parse,
-            context(parse_string//3, _Message))) }.
+    get_context_and_throw(parse_string//1).
+
+get_context_and_throw(Predicate) -->
+    get_context(Message),
+    { throw(json_error(parse,context(Predicate,Message))) }.
+
+get_context(Message) -->
+    read_max_n_chars(40, Chars),
+    { core:atom_chars(Context, Chars) },
+    { core:atomic_list_concat(['Near: "',Context,' ..."'], Message) }.
+
+read_max_n_chars(0, []) --> !, [].
+read_max_n_chars(N, [Char|Chars]) -->
+    % N > 0,
+    [Char],
+    !,
+    { N1 is N - 1 },
+    read_max_n_chars(N1, Chars).
+read_max_n_chars(_N, []) --> [].
 
 %   parse_array(Term)
 %
@@ -114,10 +126,7 @@ parse_array_or_throw([]) -->
     [']'],
     !.
 parse_array_or_throw(_) -->
-    { throw(
-        json_error(
-            parse,
-            context(parse_array//3, _Message))) }.
+    get_context_and_throw(parse_array//1).
 
 parse_values([Value|Values]) -->
     parse_value(Value),
@@ -160,10 +169,7 @@ parse_float_or_throw(Fraction, Exponent) -->
     parse_optional_exponent(Exponent),
     !.
 parse_float_or_throw(_, _) -->
-    { throw(
-        json_error(
-            parse,
-            context(parse_float//3, _Message))) }.
+    get_context_and_throw(parse_float//1).
 
 parse_optional_exponent(Chars) -->
     parse_e(E),

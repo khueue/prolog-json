@@ -54,7 +54,7 @@ test('json->term, float exp', [true(Got == Expected)]) :-
     json_to_term:json_to_term(Json, Got).
 
 test('json->term, invalid float', [
-        throws(json_error(parse,context(parse_float//3,_Message)))
+        throws(json_error(parse,context(parse_float//1,_Message)))
     ]) :-
     Json =
         '
@@ -151,12 +151,12 @@ test('json->term, array', [true(Got == Expected)]) :-
     json_to_term:json_to_term(Json, Got).
 
 test('json->term, invalid array', [
-        throws(json_error(parse,context(parse_array//3,_Message)))
+        throws(json_error(parse,context(parse_array//1,_Message)))
     ]) :-
     Json =
         '
         {
-            "k01" : [invalid_value],
+            "k01" : [invalid_value]
         }
         ',
     json_to_term:json_to_term(Json, _Got).
@@ -177,7 +177,7 @@ test('json->term, object', [true(Got == Expected)]) :-
     json_to_term:json_to_term(Json, Got).
 
 test('json->term, invalid object', [
-        throws(json_error(parse,context(parse_object//3,_Message)))
+        throws(json_error(parse,context(parse_object//1,_Message)))
     ]) :-
     Json =
         '
