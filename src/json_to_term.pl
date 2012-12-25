@@ -96,9 +96,12 @@ get_context_and_throw(Predicate) -->
 get_context(Message) -->
     read_max_n_chars(40, Chars),
     { core:atom_chars(Context, Chars) },
-    { core:atomic_list_concat(['Near: "',Context,' ..."'], Message) }.
+    { core:atomic_list_concat(['Near: "',Context,'"'], Message) }.
 
-read_max_n_chars(0, []) --> !, [].
+read_max_n_chars(0, Cutoff) -->
+    !,
+    [],
+    { core:atom_chars(' [...]', Cutoff) }.
 read_max_n_chars(N, [Char|Chars]) -->
     % N > 0,
     [Char],
