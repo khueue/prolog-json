@@ -97,7 +97,7 @@ parse_escape_sequence(Chars, Chars) -->
     ['\\'].
 
 parse_number(Value) -->
-    { util:chars_number(Chars, Value) },
+    { core:number_chars(Value, Chars) },
     Chars.
 
 parse_array([]) -->

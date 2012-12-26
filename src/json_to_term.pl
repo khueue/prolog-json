@@ -165,7 +165,7 @@ parse_float(Float) -->
     ['.'],
     parse_float_or_throw(Fraction, Exponent),
     { lists:append([Minus,Integer,['.'],Fraction,Exponent], Chars) },
-    { util:chars_number(Chars, Float) }.
+    { core:number_chars(Float, Chars) }.
 
 parse_float_or_throw(Fraction, Exponent) -->
     parse_digits(Fraction),
@@ -193,7 +193,7 @@ parse_integer(Integer) -->
     parse_optional_minus(Minus),
     parse_digits_for_integer(Digits),
     { lists:append([Minus,Digits], Chars) },
-    { util:chars_number(Chars, Integer) }.
+    { core:number_chars(Integer, Chars) }.
 
 parse_optional_minus(['-']) --> ['-'], !.
 parse_optional_minus([])    --> [], !.
