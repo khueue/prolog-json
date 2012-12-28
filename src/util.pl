@@ -1,8 +1,7 @@
 /** <module> Common utility predicates.
  */
 
-:- module(_,
-    [
+:- module(_, [
         get_context_and_throw//1,
         throw_error/3,
         looks_like_list/1
@@ -42,7 +41,9 @@ read_max_n_chars(_N, []) --> [].
 %
 %   Throws an exception of the form
 %
-%       json_error(Type,context(Predicate,Message))
+%       json_error(
+%           Type,
+%           context(Predicate, Message))
 %
 %   indicating that an error of Type was encountered in Predicate, with
 %   an optional Message.

@@ -3,8 +3,7 @@
  *  @see <http://jsonspec.org/>
  */
 
-:- module(_,
-    [
+:- module(_, [
         term_json/2,
         version/1
     ]).

@@ -3,14 +3,18 @@
  *  Converts a Prolog term into a JSON object atom.
  */
 
-:- module(_,
-    [
+:- module(_, [
         term_to_json/2
     ]).
 
 :- include(json(include/common)).
 
 :- use_module(json(util), []).
+
+%%  term_to_json(+Term, -Json) is semidet.
+%
+%   True if Term is the Prolog representation of the minified (no whitespace)
+%   JSON object atom Json.
 
 term_to_json(Term, Json) :-
     phrase(parse_object(Term), JsonChars),

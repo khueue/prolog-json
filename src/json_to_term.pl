@@ -3,14 +3,17 @@
  *  Parses a JSON object atom and converts it into a Prolog term.
  */
 
-:- module(_,
-    [
+:- module(_, [
         json_to_term/2
     ]).
 
 :- include(json(include/common)).
 
 :- use_module(json(util), []).
+
+%%  json_to_term(+Json, -Term) is semidet.
+%
+%   True if Term is the Prolog representation of the JSON object atom Json.
 
 json_to_term(Json, Term) :-
     core:atom_chars(Json, JsonChars),
