@@ -64,25 +64,25 @@ parse_value(Value) -->
     !,
     parse_number(Value).
 
-parse_atom(Value) -->
+parse_atom(Atom) -->
     ['"'],
-    { core:atom_chars(Value, Chars) },
+    { core:atom_chars(Atom, Chars) },
     parse_string_chars(Chars),
     ['"'].
 
 parse_string_chars([]) --> !, [].
 parse_string_chars(Chars) -->
-    parse_special_chars(Chars, RestChars),
+    parse_special_chars(Chars, Chars1),
     !,
-    parse_string_chars(RestChars).
+    parse_string_chars(Chars1).
 parse_string_chars([Char|Chars]) -->
     [Char],
     parse_string_chars(Chars).
 
-parse_special_chars(['\\'|Chars], RestChars) -->
+parse_special_chars(['\\'|Chars], Chars1) -->
     ['\\'],
     !,
-    parse_escape_sequence(Chars, RestChars).
+    parse_escape_sequence(Chars, Chars1).
 parse_special_chars([Char|Chars], Chars) -->
     { single_special_char(Char, EscapedChar) },
     ['\\',EscapedChar].
@@ -100,8 +100,8 @@ parse_escape_sequence(['u',Hex1,Hex2,Hex3,Hex4|Chars], Chars) -->
 parse_escape_sequence(Chars, Chars) -->
     ['\\'].
 
-parse_number(Value) -->
-    { core:number_chars(Value, Chars) },
+parse_number(Number) -->
+    { core:number_chars(Number, Chars) },
     Chars.
 
 parse_array([]) -->
