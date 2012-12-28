@@ -21,4 +21,9 @@ test('complex object, back and forth', [true(Got == Expected)]) :-
     json:term_json(Expected, MinifiedJson),
     json:term_json(Got, MinifiedJson).
 
+test('both inputs nonvar', [
+        throws(json_error(instantiation,context(term_json/2,_Message)))
+    ]) :-
+    json:term_json(_, _).
+
 :- end_tests('json:term_json/2').

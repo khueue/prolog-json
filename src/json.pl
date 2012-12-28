@@ -36,7 +36,4 @@ term_json(Term, Json) :-
     !,
     term_to_json:term_to_json(Term, Json).
 term_json(_Term, _Json) :-
-    throw(
-        json_error(
-            instantiation,
-            context(term_json/2, _Message))).
+    util:throw_error(instantiation, term_json/2, _Message).
