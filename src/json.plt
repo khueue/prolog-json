@@ -2,6 +2,10 @@
 
 :- begin_tests('json:term_json/2').
 
+test('verify library version', [true(Got == Expected)]) :-
+    Expected = [1,0,0],
+    json:version(Got).
+
 test('complex object, back and forth', [true(Got == Expected)]) :-
     Expected =
         json([
