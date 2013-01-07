@@ -142,64 +142,61 @@ parse_number(Number) -->
     parse_integer(Number).
 
 parse_float(Float) -->
-    parse_optional_minus(Minus),
-    parse_digits_for_integer(Integer),
+    parse_optional_minus(Chars, Chars1),
+    parse_digits_for_integer(Chars1, ['.'|Chars0]),
     ['.'],
-    parse_float_or_throw(Fraction, Exponent),
-    { lists:append([Minus,Integer,['.'],Fraction,Exponent], Chars) },
+    parse_float_or_throw(Chars0),
     { core:number_chars(Float, Chars) }.
 
-parse_float_or_throw(Fraction, Exponent) -->
-    parse_digits(Fraction),
-    parse_optional_exponent(Exponent),
+parse_float_or_throw(Chars) -->
+    parse_digits(Chars, Chars0),
+    parse_optional_exponent(Chars0),
     !.
-parse_float_or_throw(_, _) -->
+parse_float_or_throw(_) -->
     util:get_context_and_throw(parse_float//1).
 
 parse_optional_exponent(Chars) -->
-    parse_e(E),
-    parse_optional_sign(Sign),
-    parse_digits(Digits),
-    !,
-    { lists:append([E,Sign,Digits], Chars) }.
+    parse_e(Chars, Chars1),
+    parse_optional_sign(Chars1, Chars0),
+    parse_digits(Chars0, []),
+    !.
 parse_optional_exponent([]) --> [].
 
-parse_e(['e']) --> ['e'], !.
-parse_e(['E']) --> ['E'], !.
+parse_e(['e'|T], T) --> ['e'], !.
+parse_e(['E'|T], T) --> ['E'], !.
 
-parse_optional_sign(['+']) --> ['+'], !.
-parse_optional_sign(['-']) --> ['-'], !.
-parse_optional_sign([])    --> [], !.
+parse_optional_sign(['+'|T], T) --> ['+'], !.
+parse_optional_sign(['-'|T], T) --> ['-'], !.
+parse_optional_sign(T, T)       --> [], !.
 
 parse_integer(Integer) -->
-    parse_optional_minus(Minus),
-    parse_digits_for_integer(Digits),
-    { lists:append([Minus,Digits], Chars) },
+    parse_optional_minus(Chars, Chars1),
+    parse_digits_for_integer(Chars1, []),
     { core:number_chars(Integer, Chars) }.
 
-parse_optional_minus(['-']) --> ['-'], !.
-parse_optional_minus([])    --> [], !.
+parse_optional_minus(['-'|T], T) --> ['-'], !.
+parse_optional_minus(T, T)       --> [], !.
 
-parse_digits_for_integer([Digit|Digits]) -->
+parse_digits_for_integer([Digit|Digits], Digits0) -->
     parse_digit_nonzero(Digit),
     !,
-    parse_optional_digits(Digits).
-parse_digits_for_integer([Digit]) -->
+    parse_optional_digits(Digits, Digits0).
+parse_digits_for_integer([Digit|T], T) -->
     parse_digit(Digit).
 
 parse_digit_nonzero(Digit) -->
     parse_digit(Digit),
     { Digit \== '0' }.
 
-parse_optional_digits([Digit|Digits]) -->
+parse_optional_digits([Digit|Digits], T) -->
     parse_digit(Digit),
     !,
-    parse_optional_digits(Digits).
-parse_optional_digits([]) --> [].
+    parse_optional_digits(Digits, T).
+parse_optional_digits(T, T) --> [].
 
-parse_digits([Digit|Digits]) -->
+parse_digits([Digit|Digits], T) -->
     parse_digit(Digit),
-    parse_optional_digits(Digits).
+    parse_optional_digits(Digits, T).
 
 parse_digit(Digit) -->
     [Digit],

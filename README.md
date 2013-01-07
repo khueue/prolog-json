@@ -3,7 +3,6 @@
 ## Todo
 
  * Go through escaping once more
- * Try to get rid of appends
  * Add proper error handling
 
 ## License
