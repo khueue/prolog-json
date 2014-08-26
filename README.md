@@ -1,5 +1,29 @@
 # JSON Parser for Prolog
 
+## Short Example
+
+	```prolog
+	$ swipl
+
+	?- [load].
+	% load compiled 0.05 sec, 1,665 clauses
+	true.
+
+	?- json_load_project_modules.
+	% library(pldoc) compiled into pldoc 0.14 sec, 1,297 clauses
+	% json(util) compiled into util 0.00 sec, 21 clauses
+	% json_to_term compiled into json_to_term 0.01 sec, 129 clauses
+	% term_to_json compiled into term_to_json 0.00 sec, 46 clauses
+	% json(json) compiled into json 0.01 sec, 192 clauses
+	true.
+
+	?- json:term_json(json([hello-42]), Json).
+	Json = '{"hello":42}'.
+
+	?- json:term_json(Term, '{"hello":42}').
+	Term = json([hello-42]).
+	```
+
 ## Todo
 
  * Go through escaping once more
